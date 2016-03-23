@@ -10,18 +10,16 @@ import UIKit
 
 private let reuseIdentifier = "Cell"
 
-class PhotoCollectionViewController: UICollectionViewController {
+class PhotoCollectionViewController: UICollectionViewController, UIImagePickerControllerDelegate,UINavigationControllerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Register cell classes
-        //self.collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-
-        // Do any additional setup after loading the view.
+        
+        let width = UIScreen.mainScreen().bounds.size.width-5*3
+        let layout: UICollectionViewFlowLayout = self.collectionViewLayout as! UICollectionViewFlowLayout
+        layout.itemSize = CGSizeMake(width/4.0, width/4.0)
+        layout.sectionInset = UIEdgeInsetsMake(20, 0, 0, 0)
+        layout.minimumInteritemSpacing = 5
     }
 
    
@@ -50,13 +48,14 @@ class PhotoCollectionViewController: UICollectionViewController {
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! PhotoCollectionViewCell
-        
+        cell.backgroundColor = UIColor.lightGrayColor()
         cell.image.image = UIImage(named: "demo1")
     
         return cell
     }
 
     // MARK: UICollectionViewDelegate
+    
 
     
     // Uncomment this method to specify if the specified item should be highlighted during tracking
@@ -71,6 +70,11 @@ class PhotoCollectionViewController: UICollectionViewController {
         return true
     }
     
+    
+    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        
+        self.selectedPicture()
+    }
 
     /*
     // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
@@ -86,5 +90,26 @@ class PhotoCollectionViewController: UICollectionViewController {
     
     }
     */
-
+    
+    // MARK: selected picture from ablum
+    
+    func selectedPicture()
+    {
+        let pick : UIImagePickerController = UIImagePickerController()
+        pick.delegate = self
+        self.presentViewController(pick, animated: true, completion: nil)
+    }
+    
+    // MARK : picker delegate
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        
+        print(info)
+        picker.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        picker.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
 }
